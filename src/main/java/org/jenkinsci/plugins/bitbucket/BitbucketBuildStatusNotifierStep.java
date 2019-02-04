@@ -170,24 +170,30 @@ public class BitbucketBuildStatusNotifierStep extends AbstractStepImpl {
 
         @Override
         public Void run() throws Exception {
+            logger.info("reading global config");
             this.readGlobalConfiguration();
 
+            logger.info("reading build state");
             String buildState = step.getBuildState();
 
+            logger.info("reading key ");
             String buildKey = step.getBuildKey();
             if (buildKey == null) {
                 buildKey = BitbucketBuildStatusHelper.defaultBitbucketBuildKeyFromBuild(build);
             }
-
+            logger.info("build key:" +buildKey);
+            logger.info("build name");
             String buildName = step.getBuildName();
             if (buildName == null) {
                 buildName = BitbucketBuildStatusHelper.defaultBitbucketBuildNameFromBuild(build);
             }
+            logger.info("build name"+buildName);
 
             String buildDescription = step.getBuildDescription();
             if (buildDescription == null) {
                 buildDescription = BitbucketBuildStatusHelper.defaultBitbucketBuildDescriptionFromBuild(build);
             }
+
 
             String commitId = step.getCommitId();
             String repoSlug = step.getRepoSlug();

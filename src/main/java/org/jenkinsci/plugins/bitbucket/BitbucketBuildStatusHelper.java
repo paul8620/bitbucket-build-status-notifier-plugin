@@ -269,22 +269,25 @@ class BitbucketBuildStatusHelper {
         if (credentials == null) {
             throw new Exception("Credentials could not be found!");
         }
+        logger.info("before authentication");
 
         OAuthConfig config = new OAuthConfig(credentials.getUsername(), credentials.getPassword().getPlainText());
+        logger.info("authentication");
         BitbucketApiService apiService = (BitbucketApiService) new BitbucketApi().createService(config);
-
+        logger.info("gson builder");
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(BitbucketBuildStatus.class, new BitbucketBuildStatusSerializer());
         gsonBuilder.setPrettyPrinting();
         Gson gson = gsonBuilder.create();
-
+        logger.info("gson builder complete");
+        logger.info("starting request");
         OAuthRequest request = new OAuthRequest(Verb.POST, buildStatusResource.generateUrl(Verb.POST));
         request.addHeader("Content-type", "application/json");
         request.addPayload(gson.toJson(buildStatus));
-
+        logger.info("token");
         Token token = apiService.getAccessToken(OAuthConstants.EMPTY_TOKEN, null);
         apiService.signRequest(token, request);
-
+        logger.info("right before send");
         Response response = request.send();
 
         logger.info("This request was sent: " + request.getBodyContents());
